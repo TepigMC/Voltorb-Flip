@@ -1,0 +1,118 @@
+// Code from http://phaser.io/sandbox/edit/FhJLhNZm
+
+// Preload
+function preload() {
+  game.load.baseURL = 'https://raw.githubusercontent.com/TepigMC/Voltorb-Flip/master/';
+  game.load.crossOrigin = 'anonymous';
+
+  game.load.image('background', 'sprites/background.png');
+  game.load.spritesheet('cards', 'sprites/cards_strip5.png', 24, 24);
+  game.load.spritesheet('selection', 'sprites/selection_strip3.png', 28, 28);
+
+  game.stage.smoothed = false;
+}
+
+// Create
+var settings = {
+  gridSize: 5,
+  cardSize: 24,
+  cardMargin: 8
+};
+var cards;
+var selection;
+var keys = {};
+
+function create() {
+  var background = game.add.sprite(0, 0, 'background');
+  cards = [];
+  for (var i = 0; i < settings.gridSize; i++) {
+    var row = [];
+    for (var j = 0; j < settings.gridSize; j++) {
+      row.push(new Card(i, j, 1));
+    }
+    cards.push(row);
+  }
+  cards[0][0].flip();
+  selection = new Selection(0, 0);
+
+  addKey('UP', function() { selection.moveUp(); }, this);
+  addKey('DOWN', function() { selection.moveDown(); }, this);
+  addKey('LEFT', function() { selection.moveLeft(); }, this);
+  addKey('RIGHT', function() { selection.moveRight(); }, this);
+}
+
+function addKey(keyName, callback, listenerContext) {
+  var key = game.input.keyboard.addKey(Phaser.Keyboard[keyName]);
+  key.onDown.add(callback, listenerContext);
+  keys[keyName] = key;
+}
+
+function cardPos(pos) {
+  return settings.cardMargin + pos * (settings.cardSize + settings.cardMargin);
+}
+
+var Card = (function () {
+  function Card(r, c, value) {
+    var sprite = game.add.sprite(cardPos(c), cardPos(r), 'cards', 0);
+    sprite.inputEnabled = true;
+    sprite.events.onInputDown.add(onClick, this);
+    this.sprite = sprite;
+    this.r = r;
+    this.c = c;
+    this.value = value;
+  }
+
+  Card.prototype.flip = flip;
+
+  function flip() {
+    this.sprite.frame = this.value + 1;
+  }
+  function onClick() {
+    this.flip();
+    selection.move(this.r, this.c);
+  }
+
+  return Card;
+})();
+
+var Selection = (function () {
+  function Selection(r, c) {
+    this.sprite = game.add.sprite(0, 0, 'selection', 0);
+    this.move(r, c);
+  }
+
+  Selection.prototype.move = move;
+  Selection.prototype.moveRelative = moveRelative;
+  Selection.prototype.moveUp = moveUp;
+  Selection.prototype.moveDown = moveDown;
+  Selection.prototype.moveLeft = moveLeft;
+  Selection.prototype.moveRight = moveRight;
+
+  function move(r, c) {
+    r = (r < 0 ? 0 : (r >= settings.gridSize ? settings.gridSize - 1 : r));
+    c = (c < 0 ? 0 : (c >= settings.gridSize ? settings.gridSize - 1 : c));
+    this.r = r;
+    this.c = c;
+    this.sprite.x = cardPos(c) - 2;
+    this.sprite.y = cardPos(r) - 2;
+  }
+  function moveRelative(r, c) {
+    this.move(this.r + r, this.c + c);
+  }
+  function moveUp() { this.moveRelative(-1, 0); }
+  function moveDown() { this.moveRelative(1, 0); }
+  function moveLeft() { this.moveRelative(0, -1); }
+  function moveRight() { this.moveRelative(0, 1); }
+
+  return Selection;
+})();
+
+// Update
+function update() {
+  
+}
+
+// Render
+function render() {
+  
+}
