@@ -5,16 +5,16 @@
     <page id="0" file="board_numbers.png"/>
   </pages>
   <chars count="10">
-    <char id="48" x="0" y="0" width="6" height="8" xoffset="6" yoffset="28" xadvance="45" page="0" chnl="0" letter="0"/>
-    <char id="49" x="6" y="0" width="6" height="8" xoffset="7" yoffset="24" xadvance="25" page="0" chnl="0" letter="1"/>
-    <char id="50" x="12" y="0" width="6" height="8" xoffset="5" yoffset="27" xadvance="41" page="0" chnl="0" letter="2"/>
-    <char id="51" x="18" y="0" width="6" height="8" xoffset="3" yoffset="26" xadvance="35" page="0" chnl="0" letter="3"/>
-    <char id="52" x="24" y="0" width="6" height="8" xoffset="3" yoffset="26" xadvance="44" page="0" chnl="0" letter="4"/>
-    <char id="53" x="30" y="0" width="6" height="8" xoffset="3" yoffset="25" xadvance="36" page="0" chnl="0" letter="5"/>
-    <char id="54" x="36" y="0" width="6" height="8" xoffset="5" yoffset="18" xadvance="50" page="0" chnl="0" letter="6"/>
-    <char id="55" x="42" y="0" width="6" height="8" xoffset="2" yoffset="27" xadvance="35" page="0" chnl="0" letter="7"/>
-    <char id="56" x="48" y="0" width="6" height="8" xoffset="5" yoffset="25" xadvance="47" page="0" chnl="0" letter="8"/>
-    <char id="57" x="56" y="0" width="6" height="8" xoffset="3" yoffset="25" xadvance="43" page="0" chnl="0" letter="9"/>
+    <char id="48" x="0" y="0" width="6" height="8" xoffset="0" yoffset="0" xadvance="3" page="0" chnl="0" letter="0"/>
+    <char id="49" x="6" y="0" width="6" height="8" xoffset="0" yoffset="0" xadvance="3" page="0" chnl="0" letter="1"/>
+    <char id="50" x="12" y="0" width="6" height="8" xoffset="0" yoffset="0" xadvance="3" page="0" chnl="0" letter="2"/>
+    <char id="51" x="18" y="0" width="6" height="8" xoffset="0" yoffset="0" xadvance="3" page="0" chnl="0" letter="3"/>
+    <char id="52" x="24" y="0" width="6" height="8" xoffset="0" yoffset="0" xadvance="3" page="0" chnl="0" letter="4"/>
+    <char id="53" x="30" y="0" width="6" height="8" xoffset="0" yoffset="0" xadvance="3" page="0" chnl="0" letter="5"/>
+    <char id="54" x="36" y="0" width="6" height="8" xoffset="0" yoffset="0" xadvance="3" page="0" chnl="0" letter="6"/>
+    <char id="55" x="42" y="0" width="6" height="8" xoffset="0" yoffset="0" xadvance="3" page="0" chnl="0" letter="7"/>
+    <char id="56" x="48" y="0" width="6" height="8" xoffset="0" yoffset="0" xadvance="3" page="0" chnl="0" letter="8"/>
+    <char id="57" x="56" y="0" width="6" height="8" xoffset="0" yoffset="0" xadvance="3" page="0" chnl="0" letter="9"/>
   </chars>
   <kernings count="0"></kernings>
 </font>
