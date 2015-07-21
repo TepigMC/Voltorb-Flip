@@ -6,8 +6,10 @@ function preload() {
   game.load.crossOrigin = 'anonymous';
 
   game.load.image('background', 'sprites/background.png');
-  game.load.spritesheet('cards', 'sprites/cards_strip5.png', 24, 24);
-  game.load.spritesheet('selection', 'sprites/selection_strip3.png', 28, 28);
+  game.load.spritesheet('cards', 'sprites/cards.png', 24, 24);
+  game.load.spritesheet('selection', 'sprites/selection.png', 28, 28);
+
+  game.load.bitmapFont('board_numbers', 'fonts/board_numbers.png', 'fonts/board_numbers.fnt?v=6');
 
   game.stage.smoothed = false;
 }
@@ -18,27 +20,33 @@ var settings = {
   cardSize: 24,
   cardMargin: 8
 };
-var cards;
-var selection;
+var board;
 var keys = {};
 
 function create() {
   var background = game.add.sprite(0, 0, 'background');
-  cards = [];
+  var cards = generateCards();
+  var selection = new Selection(0, 0);
+  board = new Board(background, cards, selection);
+  board.cards[0][0].flip();
+
+  addKey('UP', function() { board.selection.moveUp(); }, this);
+  addKey('DOWN', function() { board.selection.moveDown(); }, this);
+  addKey('LEFT', function() { board.selection.moveLeft(); }, this);
+  addKey('RIGHT', function() { board.selection.moveRight(); }, this);
+  addKey('SPACEBAR', function() { board.selection.flipCard(); }, this);
+}
+
+function generateCards() {
+  var cards = [];
   for (var i = 0; i < settings.gridSize; i++) {
     var row = [];
     for (var j = 0; j < settings.gridSize; j++) {
-      row.push(new Card(i, j, 1));
+      row.push(new Card(i, j, 3));
     }
     cards.push(row);
   }
-  cards[0][0].flip();
-  selection = new Selection(0, 0);
-
-  addKey('UP', function() { selection.moveUp(); }, this);
-  addKey('DOWN', function() { selection.moveDown(); }, this);
-  addKey('LEFT', function() { selection.moveLeft(); }, this);
-  addKey('RIGHT', function() { selection.moveRight(); }, this);
+  return cards;
 }
 
 function addKey(keyName, callback, listenerContext) {
@@ -50,6 +58,51 @@ function addKey(keyName, callback, listenerContext) {
 function cardPos(pos) {
   return settings.cardMargin + pos * (settings.cardSize + settings.cardMargin);
 }
+
+var Board = (function () {
+  function Board(background, cards, selection) {
+    this.background = background;
+    this.setCards(cards);
+    this.selection = selection;
+  }
+
+  Board.prototype.setCards = setCards;
+  Board.prototype.calculateTotals = calculateTotals;
+
+  function setCards(cards) {
+    this.cards = cards;
+    this.calculateTotals();
+  }
+
+  function calculateTotals() {
+    var rows = [];
+    var cols = [];
+    for (var i = 0; i < settings.gridSize; i++) {
+      var row = {coins: 0, voltorbs: 0, coinText: null, voltorbText: null};
+      var col = {coins: 0, voltorbs: 0, coinText: null, voltorbText: null};
+      for (var j = 0; j < settings.gridSize; j++) {
+        row.coins += this.cards[i][j].value;
+        col.coins += this.cards[j][i].value;
+        if (this.cards[i][j].value === 0) {
+          row.voltorbs++;
+        }
+        if (this.cards[j][i].value === 0) {
+          col.voltorbs++;
+        }
+      }
+      row.coinText = game.add.bitmapText(177, cardPos(i), 'board_numbers', col.coins.toString(), 32);
+      row.voltorbText = game.add.bitmapText(185, cardPos(i) + 13, 'board_numbers', col.voltorbs.toString(), 32);
+      col.coinText = game.add.bitmapText(cardPos(i) + 9, 168, 'board_numbers', col.coins.toString(), 32);
+      col.voltorbText = game.add.bitmapText(cardPos(i) + 17, 181, 'board_numbers', col.voltorbs.toString(), 32);
+      rows.push(row);
+      cols.push(col);
+    }
+    this.rows = rows;
+    this.cols = cols;
+  }
+
+  return Board;
+})();
 
 var Card = (function () {
   function Card(r, c, value) {
@@ -69,7 +122,7 @@ var Card = (function () {
   }
   function onClick() {
     this.flip();
-    selection.move(this.r, this.c);
+    board.selection.move(this.r, this.c);
   }
 
   return Card;
@@ -87,6 +140,7 @@ var Selection = (function () {
   Selection.prototype.moveDown = moveDown;
   Selection.prototype.moveLeft = moveLeft;
   Selection.prototype.moveRight = moveRight;
+  Selection.prototype.flipCard = flipCard;
 
   function move(r, c) {
     r = (r < 0 ? 0 : (r >= settings.gridSize ? settings.gridSize - 1 : r));
@@ -103,6 +157,9 @@ var Selection = (function () {
   function moveDown() { this.moveRelative(1, 0); }
   function moveLeft() { this.moveRelative(0, -1); }
   function moveRight() { this.moveRelative(0, 1); }
+  function flipCard() {
+    board.cards[this.r][this.c].flip();
+  }
 
   return Selection;
 })();
