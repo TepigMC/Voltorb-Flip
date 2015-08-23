@@ -52,28 +52,26 @@ var Board = (function () {
         var rows = [];
         var cols = [];
         for (var i = 0; i < VoltorbFlip.GRID_SIZE; i++) {
-            //var row = { coins: 0, voltorbs: 0, coinText: null, voltorbText: null };
-            //var col = { coins: 0, voltorbs: 0, coinText: null, voltorbText: null };
-            var rowCoins, rowVoltorbs;
-            var colCoins, colVoltorbs;
+            var row = { coins: 0, voltorbs: 0, coinText: null, voltorbText: null };
+            var col = { coins: 0, voltorbs: 0, coinText: null, voltorbText: null };
+            //var rowCoins: number, rowVoltorbs: number;
+            //var colCoins: number, colVoltorbs: number;
             for (var j = 0; j < VoltorbFlip.GRID_SIZE; j++) {
-                rowCoins += this.cards[i][j].value;
-                colCoins += this.cards[j][i].value;
+                row.coins += this.cards[i][j].value;
+                col.coins += this.cards[j][i].value;
                 if (this.cards[i][j].value === 0) {
-                    rowVoltorbs++;
+                    row.voltorbs++;
                 }
                 if (this.cards[j][i].value === 0) {
-                    colVoltorbs++;
+                    col.voltorbs++;
                 }
             }
-            //row.coinText = voltorbFlip.game.add.bitmapText(177, cardPos(i), 'board_numbers', ('00' + col.coins).slice(-2), 32);
-            //row.voltorbText = voltorbFlip.game.add.bitmapText(185, cardPos(i) + 13, 'board_numbers', col.voltorbs.toString(), 32);
-            //col.coinText = voltorbFlip.game.add.bitmapText(cardPos(i) + 9, 168, 'board_numbers', ('00' + col.coins).slice(-2), 32);
-            //col.voltorbText = voltorbFlip.game.add.bitmapText(cardPos(i) + 17, 181, 'board_numbers', col.voltorbs.toString(), 32);
-            //rows.push(row);
-            //cols.push(col);
-            rows.push(new BoardHint(voltorbFlip, i, VoltorbFlip.GRID_SIZE + 1, rowCoins, rowVoltorbs));
-            cols.push(new BoardHint(voltorbFlip, VoltorbFlip.GRID_SIZE + 1, i, colCoins, colVoltorbs));
+            row.coinText = voltorbFlip.game.add.bitmapText(177, cardPos(i), 'board_numbers', ('00' + col.coins).slice(-2), 32);
+            row.voltorbText = voltorbFlip.game.add.bitmapText(185, cardPos(i) + 13, 'board_numbers', col.voltorbs.toString(), 32);
+            col.coinText = voltorbFlip.game.add.bitmapText(cardPos(i) + 9, 168, 'board_numbers', ('00' + col.coins).slice(-2), 32);
+            col.voltorbText = voltorbFlip.game.add.bitmapText(cardPos(i) + 17, 181, 'board_numbers', col.voltorbs.toString(), 32);
+            rows.push(row);
+            cols.push(col);
         }
         this.rows = rows;
         this.cols = cols;
