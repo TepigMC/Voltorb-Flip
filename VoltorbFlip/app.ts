@@ -3,7 +3,7 @@
   board: Board;
   keys: Phaser.Key[];
 
-  static GRID_SIZE = 5;
+  static BOARD_SIZE = 5;
   static CARD_SIZE = 24;
   static CARD_MARGIN = 8;
 
@@ -42,8 +42,8 @@
 
 class Board {
   cards: Card[][];
-  rows: BoardHint[];
-  cols: BoardHint[];
+  rows: HintText[];
+  cols: HintText[];
   cursor: Cursor;
   background: Phaser.Sprite;
 
@@ -56,9 +56,9 @@ class Board {
 
   generateCards(voltorbFlip: VoltorbFlip, value: number) {
     var cards = [];
-    for (var i = 0; i < VoltorbFlip.GRID_SIZE; i++) {
+    for (var i = 0; i < VoltorbFlip.BOARD_SIZE; i++) {
       var row = [];
-      for (var j = 0; j < VoltorbFlip.GRID_SIZE; j++) {
+      for (var j = 0; j < VoltorbFlip.BOARD_SIZE; j++) {
         row.push(new Card(voltorbFlip, i, j, value));
       }
       cards.push(row);
@@ -69,12 +69,12 @@ class Board {
   calculateTotals(voltorbFlip: VoltorbFlip) {
     var rows = [];
     var cols = [];
-    for (var i = 0; i < VoltorbFlip.GRID_SIZE; i++) {
+    for (var i = 0; i < VoltorbFlip.BOARD_SIZE; i++) {
       var row = { coins: 0, voltorbs: 0, coinText: null, voltorbText: null };
       var col = { coins: 0, voltorbs: 0, coinText: null, voltorbText: null };
       //var rowCoins: number, rowVoltorbs: number;
       //var colCoins: number, colVoltorbs: number;
-      for (var j = 0; j < VoltorbFlip.GRID_SIZE; j++) {
+      for (var j = 0; j < VoltorbFlip.BOARD_SIZE; j++) {
         row.coins += this.cards[i][j].value;
         col.coins += this.cards[j][i].value;
         if (this.cards[i][j].value === 0) {
@@ -84,21 +84,21 @@ class Board {
           col.voltorbs++;
         }
       }
-      row.coinText = voltorbFlip.game.add.bitmapText(177, cardPos(i), 'board_numbers', ('00' + col.coins).slice(-2), 32);
-      row.voltorbText = voltorbFlip.game.add.bitmapText(185, cardPos(i) + 13, 'board_numbers', col.voltorbs.toString(), 32);
-      col.coinText = voltorbFlip.game.add.bitmapText(cardPos(i) + 9, 168, 'board_numbers', ('00' + col.coins).slice(-2), 32);
-      col.voltorbText = voltorbFlip.game.add.bitmapText(cardPos(i) + 17, 181, 'board_numbers', col.voltorbs.toString(), 32);
+      row.coinText = voltorbFlip.game.add.bitmapText(177, cardPos(i) - VoltorbFlip.CARD_SIZE / 2, 'board_numbers', ('00' + col.coins).slice(-2), 32);
+      row.voltorbText = voltorbFlip.game.add.bitmapText(185, cardPos(i) + 13 - VoltorbFlip.CARD_SIZE / 2, 'board_numbers', col.voltorbs.toString(), 32);
+      col.coinText = voltorbFlip.game.add.bitmapText(cardPos(i) + 9 - VoltorbFlip.CARD_SIZE / 2, 168, 'board_numbers', ('00' + col.coins).slice(-2), 32);
+      col.voltorbText = voltorbFlip.game.add.bitmapText(cardPos(i) + 17 - VoltorbFlip.CARD_SIZE / 2, 181, 'board_numbers', col.voltorbs.toString(), 32);
       rows.push(row);
       cols.push(col);
-      //rows.push(new BoardHint(voltorbFlip, i, VoltorbFlip.GRID_SIZE + 1, rowCoins, rowVoltorbs));
-      //cols.push(new BoardHint(voltorbFlip, VoltorbFlip.GRID_SIZE + 1, i, colCoins, colVoltorbs));
+      //rows.push(new HintText(voltorbFlip, i, VoltorbFlip.BOARD_SIZE + 1, rowCoins, rowVoltorbs));
+      //cols.push(new HintText(voltorbFlip, VoltorbFlip.BOARD_SIZE + 1, i, colCoins, colVoltorbs));
     }
     this.rows = rows;
     this.cols = cols;
   }
 }
 
-class BoardHint {
+class HintText {
   coins: number;
   voltorbs: number;
   coinText: Phaser.BitmapText;
@@ -119,10 +119,10 @@ class Card {
   sprite: Phaser.Sprite;
 
   constructor(voltorbFlip: VoltorbFlip, row: number, col: number, value: number) {
-    var sprite = voltorbFlip.game.add.sprite(cardPos(col), cardPos(row), 'cards', 0);
-    sprite.inputEnabled = true;
-    sprite.events.onInputDown.add(() => this.onClick(voltorbFlip), this);
-    this.sprite = sprite;
+    this.sprite = voltorbFlip.game.add.sprite(cardPos(col), cardPos(row), 'cards', 0);
+    this.sprite.anchor.setTo(.5, .5);
+    this.sprite.inputEnabled = true;
+    this.sprite.events.onInputDown.add(() => this.onClick(voltorbFlip), this);
     this.row = row;
     this.col = col;
     this.value = value;
@@ -145,16 +145,17 @@ class Cursor {
 
   constructor(voltorbFlip: VoltorbFlip, row: number, col: number) {
     this.sprite = voltorbFlip.game.add.sprite(0, 0, 'cursor', 0);
+    this.sprite.anchor.setTo(.5, .5);
     this.move(row, col);
   }
 
   move(row: number, col: number) {
-    row = (row < 0 ? 0 : (row >= VoltorbFlip.GRID_SIZE ? VoltorbFlip.GRID_SIZE - 1 : row));
-    col = (col < 0 ? 0 : (col >= VoltorbFlip.GRID_SIZE ? VoltorbFlip.GRID_SIZE - 1 : col));
+    row = (row < 0 ? VoltorbFlip.BOARD_SIZE - 1 : (row >= VoltorbFlip.BOARD_SIZE ? 0 : row));
+    col = (col < 0 ? VoltorbFlip.BOARD_SIZE - 1 : (col >= VoltorbFlip.BOARD_SIZE ? 0 : col));
     this.row = row;
     this.col = col;
-    this.sprite.x = cardPos(col) - 2;
-    this.sprite.y = cardPos(row) - 2;
+    this.sprite.x = cardPos(col);
+    this.sprite.y = cardPos(row);
   }
 
   moveUp() { this.moveRelative(-1, 0); }
@@ -172,7 +173,7 @@ class Cursor {
 }
 
 function cardPos(pos: number) {
-  return pos * (VoltorbFlip.CARD_SIZE + VoltorbFlip.CARD_MARGIN) + VoltorbFlip.CARD_MARGIN;
+  return pos * (VoltorbFlip.CARD_SIZE + VoltorbFlip.CARD_MARGIN) + VoltorbFlip.CARD_MARGIN + VoltorbFlip.CARD_SIZE / 2;
 }
 
 window.onload = () => {
