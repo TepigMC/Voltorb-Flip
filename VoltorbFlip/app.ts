@@ -55,9 +55,9 @@
 
     generateCards(value: number) {
       var cards = [];
-      for (var i = 0; i < VoltorbFlip.BOARD_SIZE; i++) {
+      for (var i = 0; i < BOARD_SIZE; i++) {
         var row = [];
-        for (var j = 0; j < VoltorbFlip.BOARD_SIZE; j++) {
+        for (var j = 0; j < BOARD_SIZE; j++) {
           row.push(new Card(i, j, value));
         }
         cards.push(row);
@@ -68,29 +68,21 @@
     calculateTotals() {
       var rows = [];
       var cols = [];
-      for (var i = 0; i < VoltorbFlip.BOARD_SIZE; i++) {
-        var row = { coins: 0, voltorbs: 0, coinText: null, voltorbText: null };
-        var col = { coins: 0, voltorbs: 0, coinText: null, voltorbText: null };
-        //var rowCoins: number, rowVoltorbs: number;
-        //var colCoins: number, colVoltorbs: number;
-        for (var j = 0; j < VoltorbFlip.BOARD_SIZE; j++) {
-          row.coins += this.cards[i][j].value;
-          col.coins += this.cards[j][i].value;
+      for (var i = 0; i < BOARD_SIZE; i++) {
+        var rowCoins = 0, rowVoltorbs = 0;
+        var colCoins = 0, colVoltorbs = 0;
+        for (var j = 0; j < BOARD_SIZE; j++) {
+          rowCoins += this.cards[i][j].value;
+          colCoins += this.cards[j][i].value;
           if (this.cards[i][j].value === 0) {
-            row.voltorbs++;
+            rowVoltorbs++;
           }
           if (this.cards[j][i].value === 0) {
-            col.voltorbs++;
+            colVoltorbs++;
           }
         }
-        row.coinText = game.add.bitmapText(177, cardPos(i) - VoltorbFlip.CARD_SIZE / 2, 'board_numbers', ('00' + col.coins).slice(-2), 32);
-        row.voltorbText = game.add.bitmapText(185, cardPos(i) + 13 - VoltorbFlip.CARD_SIZE / 2, 'board_numbers', col.voltorbs.toString(), 32);
-        col.coinText = game.add.bitmapText(cardPos(i) + 9 - VoltorbFlip.CARD_SIZE / 2, 168, 'board_numbers', ('00' + col.coins).slice(-2), 32);
-        col.voltorbText = game.add.bitmapText(cardPos(i) + 17 - VoltorbFlip.CARD_SIZE / 2, 181, 'board_numbers', col.voltorbs.toString(), 32);
-        rows.push(row);
-        cols.push(col);
-        //rows.push(new HintText(voltorbFlip, i, VoltorbFlip.BOARD_SIZE + 1, rowCoins, rowVoltorbs));
-        //cols.push(new HintText(voltorbFlip, VoltorbFlip.BOARD_SIZE + 1, i, colCoins, colVoltorbs));
+        rows.push(new HintText(i, BOARD_SIZE, rowCoins, rowVoltorbs));
+        cols.push(new HintText(BOARD_SIZE, i, colCoins, colVoltorbs));
       }
       this.rows = rows;
       this.cols = cols;
@@ -106,8 +98,8 @@
     constructor(row: number, col: number, coins: number, voltorbs: number) {
       this.coins = coins;
       this.voltorbs = voltorbs;
-      this.coinText = game.add.bitmapText(cardPos(col) + 9, cardPos(row), 'board_numbers', ('00' + coins).slice(-2), 32);
-      this.voltorbText = game.add.bitmapText(cardPos(col) + 17, cardPos(row) + 13, 'board_numbers', voltorbs.toString(), 32);
+      this.coinText = game.add.bitmapText(cardPos(col) - 3, cardPos(row) - 12, 'board_numbers', ('00' + coins).slice(-2), 32);
+      this.voltorbText = game.add.bitmapText(cardPos(col) + 5, cardPos(row) + 1, 'board_numbers', voltorbs.toString(), 32);
     }
   }
 
@@ -119,7 +111,7 @@
 
     constructor(row: number, col: number, value: number) {
       this.sprite = game.add.sprite(cardPos(col), cardPos(row), 'cards', 0);
-      this.sprite.anchor.setTo(.5, .5);
+      this.sprite.anchor.setTo(.5);
       this.sprite.inputEnabled = true;
       this.sprite.events.onInputDown.add(this.onClick, this);
       this.row = row;
@@ -144,13 +136,13 @@
 
     constructor(row: number, col: number) {
       this.sprite = game.add.sprite(0, 0, 'cursor', 0);
-      this.sprite.anchor.setTo(.5, .5);
+      this.sprite.anchor.setTo(.5);
       this.move(row, col);
     }
 
     move(row: number, col: number) {
-      row = (row < 0 ? VoltorbFlip.BOARD_SIZE - 1 : (row >= VoltorbFlip.BOARD_SIZE ? 0 : row));
-      col = (col < 0 ? VoltorbFlip.BOARD_SIZE - 1 : (col >= VoltorbFlip.BOARD_SIZE ? 0 : col));
+      row = (row < 0 ? BOARD_SIZE - 1 : (row >= BOARD_SIZE ? 0 : row));
+      col = (col < 0 ? BOARD_SIZE - 1 : (col >= BOARD_SIZE ? 0 : col));
       this.row = row;
       this.col = col;
       this.sprite.x = cardPos(col);
@@ -172,7 +164,7 @@
   }
 
   export function cardPos(pos: number) {
-    return pos * (VoltorbFlip.CARD_SIZE + VoltorbFlip.CARD_MARGIN) + VoltorbFlip.CARD_MARGIN + VoltorbFlip.CARD_SIZE / 2;
+    return pos * (CARD_SIZE + CARD_MARGIN) + CARD_MARGIN + CARD_SIZE / 2;
   }
 }
 
