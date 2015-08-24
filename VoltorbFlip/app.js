@@ -2,7 +2,7 @@ var VoltorbFlip;
 (function (VoltorbFlip) {
     VoltorbFlip.game;
     VoltorbFlip.board;
-    VoltorbFlip.keys;
+    VoltorbFlip.keys = {};
     VoltorbFlip.BOARD_SIZE = 5;
     VoltorbFlip.CARD_SIZE = 24;
     VoltorbFlip.CARD_MARGIN = 8;
@@ -13,6 +13,7 @@ var VoltorbFlip;
     function preload() {
         VoltorbFlip.game.load.image('background', 'sprites/background.png');
         VoltorbFlip.game.load.spritesheet('cards', 'sprites/cards.png', 24, 24);
+        VoltorbFlip.game.load.spritesheet('memos', 'sprites/memos.png', 24, 24);
         VoltorbFlip.game.load.spritesheet('cursor', 'sprites/cursor.png', 28, 28);
         VoltorbFlip.game.load.bitmapFont('board_numbers', 'fonts/board_numbers.png', 'fonts/board_numbers.xml');
         VoltorbFlip.game.stage.smoothed = false;
@@ -20,12 +21,15 @@ var VoltorbFlip;
     VoltorbFlip.preload = preload;
     function create() {
         VoltorbFlip.board = new Board();
-        VoltorbFlip.keys = [];
         addKey('UP', function () { return VoltorbFlip.board.cursor.moveUp(); }, this);
         addKey('DOWN', function () { return VoltorbFlip.board.cursor.moveDown(); }, this);
         addKey('LEFT', function () { return VoltorbFlip.board.cursor.moveLeft(); }, this);
         addKey('RIGHT', function () { return VoltorbFlip.board.cursor.moveRight(); }, this);
-        addKey('SPACEBAR', function () { return VoltorbFlip.board.cursor.flipCard(); }, this);
+        addKey('A', function () { return VoltorbFlip.board.currentCard().toggleMemo(0); }, this);
+        addKey('S', function () { return VoltorbFlip.board.currentCard().toggleMemo(1); }, this);
+        addKey('Z', function () { return VoltorbFlip.board.currentCard().toggleMemo(2); }, this);
+        addKey('X', function () { return VoltorbFlip.board.currentCard().toggleMemo(3); }, this);
+        addKey('SPACEBAR', function () { return VoltorbFlip.board.currentCard().flip(); }, this);
     }
     VoltorbFlip.create = create;
     function addKey(keyName, callback, context) {
@@ -41,6 +45,9 @@ var VoltorbFlip;
             this.cursor = new Cursor(0, 0);
             this.calculateTotals();
         }
+        Board.prototype.currentCard = function () {
+            return this.cards[this.cursor.row][this.cursor.col];
+        };
         Board.prototype.generateCards = function (value) {
             var cards = [];
             for (var i = 0; i < VoltorbFlip.BOARD_SIZE; i++) {
@@ -81,8 +88,8 @@ var VoltorbFlip;
         function HintText(row, col, coins, voltorbs) {
             this.coins = coins;
             this.voltorbs = voltorbs;
-            this.coinText = VoltorbFlip.game.add.bitmapText(cardPos(col) - 3, cardPos(row) - 12, 'board_numbers', ('00' + coins).slice(-2), 32);
-            this.voltorbText = VoltorbFlip.game.add.bitmapText(cardPos(col) + 5, cardPos(row) + 1, 'board_numbers', voltorbs.toString(), 32);
+            this.coinText = VoltorbFlip.game.add.bitmapText(Card.position(col) - 3, Card.position(row) - 12, 'board_numbers', ('00' + coins).slice(-2), 32);
+            this.voltorbText = VoltorbFlip.game.add.bitmapText(Card.position(col) + 5, Card.position(row) + 1, 'board_numbers', voltorbs.toString(), 32);
         }
         HintText.prototype.setCoins = function (coins) {
             this.coins = coins;
@@ -97,16 +104,32 @@ var VoltorbFlip;
     VoltorbFlip.HintText = HintText;
     var Card = (function () {
         function Card(row, col, value) {
-            this.sprite = VoltorbFlip.game.add.sprite(cardPos(col), cardPos(row), 'cards', 0);
-            this.sprite.anchor.setTo(.5);
-            this.sprite.inputEnabled = true;
-            this.sprite.events.onInputDown.add(this.onClick, this);
             this.row = row;
             this.col = col;
             this.value = value;
+            this.flipped = false;
+            this.sprite = VoltorbFlip.game.add.sprite(Card.position(col), Card.position(row), 'cards', 0);
+            this.sprite.anchor.setTo(.5);
+            this.sprite.inputEnabled = true;
+            this.sprite.events.onInputDown.add(this.onClick, this);
+            this.memos = [];
+            this.memos[0] = new Memo(row, col, 0);
+            this.memos[1] = new Memo(row, col, 1);
+            this.memos[2] = new Memo(row, col, 2);
+            this.memos[3] = new Memo(row, col, 3);
         }
         Card.prototype.flip = function () {
+            this.flipped = true;
             this.sprite.frame = this.value + 1;
+            this.memos.map(function (memo) { return memo.setVisible(false); });
+        };
+        Card.prototype.toggleMemo = function (id) {
+            if (this.flipped === false) {
+                this.memos[id].toggle();
+            }
+        };
+        Card.position = function (pos) {
+            return pos * (VoltorbFlip.CARD_SIZE + VoltorbFlip.CARD_MARGIN) + VoltorbFlip.CARD_MARGIN + VoltorbFlip.CARD_SIZE / 2;
         };
         Card.prototype.onClick = function () {
             this.flip();
@@ -115,6 +138,24 @@ var VoltorbFlip;
         return Card;
     })();
     VoltorbFlip.Card = Card;
+    var Memo = (function () {
+        function Memo(row, col, id) {
+            this.id = id;
+            this.visible = false;
+            this.sprite = VoltorbFlip.game.add.sprite(Card.position(col), Card.position(row), 'memos', id);
+            this.sprite.anchor.setTo(.5);
+            this.sprite.visible = false;
+        }
+        Memo.prototype.setVisible = function (visible) {
+            this.visible = visible;
+            this.sprite.visible = visible;
+        };
+        Memo.prototype.toggle = function () {
+            this.setVisible(!this.visible);
+        };
+        return Memo;
+    })();
+    VoltorbFlip.Memo = Memo;
     var Cursor = (function () {
         function Cursor(row, col) {
             this.sprite = VoltorbFlip.game.add.sprite(0, 0, 'cursor', 0);
@@ -126,26 +167,19 @@ var VoltorbFlip;
             col = (col < 0 ? VoltorbFlip.BOARD_SIZE - 1 : (col >= VoltorbFlip.BOARD_SIZE ? 0 : col));
             this.row = row;
             this.col = col;
-            this.sprite.x = cardPos(col);
-            this.sprite.y = cardPos(row);
+            this.sprite.x = Card.position(col);
+            this.sprite.y = Card.position(row);
         };
         Cursor.prototype.moveUp = function () { this.moveRelative(-1, 0); };
         Cursor.prototype.moveDown = function () { this.moveRelative(1, 0); };
         Cursor.prototype.moveLeft = function () { this.moveRelative(0, -1); };
         Cursor.prototype.moveRight = function () { this.moveRelative(0, 1); };
-        Cursor.prototype.flipCard = function () {
-            VoltorbFlip.board.cards[this.row][this.col].flip();
-        };
         Cursor.prototype.moveRelative = function (row, col) {
             this.move(this.row + row, this.col + col);
         };
         return Cursor;
     })();
     VoltorbFlip.Cursor = Cursor;
-    function cardPos(pos) {
-        return pos * (VoltorbFlip.CARD_SIZE + VoltorbFlip.CARD_MARGIN) + VoltorbFlip.CARD_MARGIN + VoltorbFlip.CARD_SIZE / 2;
-    }
-    VoltorbFlip.cardPos = cardPos;
 })(VoltorbFlip || (VoltorbFlip = {}));
 window.onload = function () {
     VoltorbFlip.init();
