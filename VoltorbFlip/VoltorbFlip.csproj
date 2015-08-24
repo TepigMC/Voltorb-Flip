@@ -18,55 +18,55 @@
     <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="app.css" />
+    <Content Include="app\styles\app.css" />
     <Content Include="favicon.png" />
-    <Content Include="fonts\board_numbers.png" />
-    <Content Include="fonts\chars\board_numbers\0.png" />
-    <Content Include="fonts\chars\board_numbers\1.png" />
-    <Content Include="fonts\chars\board_numbers\2.png" />
-    <Content Include="fonts\chars\board_numbers\3.png" />
-    <Content Include="fonts\chars\board_numbers\4.png" />
-    <Content Include="fonts\chars\board_numbers\5.png" />
-    <Content Include="fonts\chars\board_numbers\6.png" />
-    <Content Include="fonts\chars\board_numbers\7.png" />
-    <Content Include="fonts\chars\board_numbers\8.png" />
-    <Content Include="fonts\chars\board_numbers\9.png" />
-    <Content Include="fonts\chars\score_numbers\0.png" />
-    <Content Include="fonts\chars\score_numbers\1.png" />
-    <Content Include="fonts\chars\score_numbers\2.png" />
-    <Content Include="fonts\chars\score_numbers\3.png" />
-    <Content Include="fonts\chars\score_numbers\4.png" />
-    <Content Include="fonts\chars\score_numbers\5.png" />
-    <Content Include="fonts\chars\score_numbers\6.png" />
-    <Content Include="fonts\chars\score_numbers\7.png" />
-    <Content Include="fonts\chars\score_numbers\8.png" />
-    <Content Include="fonts\chars\score_numbers\9.png" />
-    <Content Include="fonts\score_numbers.png" />
+    <Content Include="app\fonts\board_numbers.png" />
+    <Content Include="app\fonts\chars\board_numbers\0.png" />
+    <Content Include="app\fonts\chars\board_numbers\1.png" />
+    <Content Include="app\fonts\chars\board_numbers\2.png" />
+    <Content Include="app\fonts\chars\board_numbers\3.png" />
+    <Content Include="app\fonts\chars\board_numbers\4.png" />
+    <Content Include="app\fonts\chars\board_numbers\5.png" />
+    <Content Include="app\fonts\chars\board_numbers\6.png" />
+    <Content Include="app\fonts\chars\board_numbers\7.png" />
+    <Content Include="app\fonts\chars\board_numbers\8.png" />
+    <Content Include="app\fonts\chars\board_numbers\9.png" />
+    <Content Include="app\fonts\chars\score_numbers\0.png" />
+    <Content Include="app\fonts\chars\score_numbers\1.png" />
+    <Content Include="app\fonts\chars\score_numbers\2.png" />
+    <Content Include="app\fonts\chars\score_numbers\3.png" />
+    <Content Include="app\fonts\chars\score_numbers\4.png" />
+    <Content Include="app\fonts\chars\score_numbers\5.png" />
+    <Content Include="app\fonts\chars\score_numbers\6.png" />
+    <Content Include="app\fonts\chars\score_numbers\7.png" />
+    <Content Include="app\fonts\chars\score_numbers\8.png" />
+    <Content Include="app\fonts\chars\score_numbers\9.png" />
+    <Content Include="app\fonts\score_numbers.png" />
     <Content Include="index.html" />
     <Content Include="lib\phaser.js" />
     <Content Include="lib\phaser.min.js" />
-    <Content Include="sprites\background.png" />
-    <Content Include="sprites\burst.png" />
-    <Content Include="sprites\burst_test.png" />
-    <Content Include="sprites\cards.png" />
-    <Content Include="sprites\explosion.png" />
-    <Content Include="sprites\explosion_test.png" />
-    <Content Include="sprites\memos.png" />
-    <Content Include="sprites\memo_button.png" />
-    <Content Include="sprites\quit_button.png" />
-    <Content Include="sprites\cursor.png" />
+    <Content Include="app\sprites\background.png" />
+    <Content Include="app\sprites\burst.png" />
+    <Content Include="app\sprites\burst_test.png" />
+    <Content Include="app\sprites\cards.png" />
+    <Content Include="app\sprites\explosion.png" />
+    <Content Include="app\sprites\explosion_test.png" />
+    <Content Include="app\sprites\memos.png" />
+    <Content Include="app\sprites\memo_button.png" />
+    <Content Include="app\sprites\quit_button.png" />
+    <Content Include="app\sprites\cursor.png" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="app.ts" />
+    <TypeScriptCompile Include="app\app.ts" />
     <TypeScriptCompile Include="typings\p2.d.ts" />
     <TypeScriptCompile Include="typings\phaser.d.ts" />
     <TypeScriptCompile Include="typings\pixi.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="lib\phaser.map" />
-    <Content Include="fonts\board_numbers.xml" />
-    <Content Include="fonts\score_numbers.xml" />
+    <Content Include="app\fonts\board_numbers.xml" />
+    <Content Include="app\fonts\score_numbers.xml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
