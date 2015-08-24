@@ -1,7 +1,7 @@
 ﻿namespace VoltorbFlip {
   export var game: Phaser.Game;
   export var board: Board;
-  export var keys: { [name: string]: Phaser.Key } = {};
+  export var keyManager: KeyManager;
 
   export var BOARD_SIZE = 5;
   export var CARD_SIZE = 24;
@@ -23,22 +23,17 @@
 
   export function create() {
     board = new Board();
+    keyManager = new KeyManager();
 
-    addKey('UP', () => board.cursor.moveUp(), this);
-    addKey('DOWN', () => board.cursor.moveDown(), this);
-    addKey('LEFT', () => board.cursor.moveLeft(), this);
-    addKey('RIGHT', () => board.cursor.moveRight(), this);
-    addKey('A', () => board.currentCard().toggleMemo(0), this);
-    addKey('S', () => board.currentCard().toggleMemo(1), this);
-    addKey('Z', () => board.currentCard().toggleMemo(2), this);
-    addKey('X', () => board.currentCard().toggleMemo(3), this);
-    addKey('SPACEBAR', () => board.currentCard().flip(), this);
-  }
-
-  export function addKey(keyName: string, callback: Function, context: any) {
-    var key = game.input.keyboard.addKey(Phaser.Keyboard[keyName]);
-    key.onDown.add(callback, context);
-    keys[keyName] = key;
+    keyManager.addKey('UP', () => board.cursor.moveUp(), this);
+    keyManager.addKey('DOWN', () => board.cursor.moveDown(), this);
+    keyManager.addKey('LEFT', () => board.cursor.moveLeft(), this);
+    keyManager.addKey('RIGHT', () => board.cursor.moveRight(), this);
+    keyManager.addKey('A', () => board.currentCard().toggleMemo(0), this);
+    keyManager.addKey('S', () => board.currentCard().toggleMemo(1), this);
+    keyManager.addKeys(['D', 'Z'], () => board.currentCard().toggleMemo(2), this);
+    keyManager.addKeys(['F', 'X'], () => board.currentCard().toggleMemo(3), this);
+    keyManager.addKey('SPACEBAR', () => board.currentCard().flip(), this);
   }
 
   export class Board {
@@ -218,6 +213,21 @@
     }
   }
 
+  export class KeyManager {
+    keys: { [name: string]: Phaser.Key } = {};
+    
+    addKey(keyName: string, callback: Function, context: any) {
+      var key = game.input.keyboard.addKey(Phaser.Keyboard[keyName]);
+      key.onDown.add(callback, context);
+      this.keys[keyName] = key;
+    }
+
+    addKeys(keyNames: string[], callback: Function, context: any) {
+      for (var keyName of keyNames) {
+        this.addKey(keyName, callback, context);
+      }
+    }
+  }
 }
 
 window.onload = () => {

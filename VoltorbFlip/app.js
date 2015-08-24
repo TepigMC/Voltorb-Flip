@@ -2,7 +2,7 @@ var VoltorbFlip;
 (function (VoltorbFlip) {
     VoltorbFlip.game;
     VoltorbFlip.board;
-    VoltorbFlip.keys = {};
+    VoltorbFlip.keyManager;
     VoltorbFlip.BOARD_SIZE = 5;
     VoltorbFlip.CARD_SIZE = 24;
     VoltorbFlip.CARD_MARGIN = 8;
@@ -21,23 +21,18 @@ var VoltorbFlip;
     VoltorbFlip.preload = preload;
     function create() {
         VoltorbFlip.board = new Board();
-        addKey('UP', function () { return VoltorbFlip.board.cursor.moveUp(); }, this);
-        addKey('DOWN', function () { return VoltorbFlip.board.cursor.moveDown(); }, this);
-        addKey('LEFT', function () { return VoltorbFlip.board.cursor.moveLeft(); }, this);
-        addKey('RIGHT', function () { return VoltorbFlip.board.cursor.moveRight(); }, this);
-        addKey('A', function () { return VoltorbFlip.board.currentCard().toggleMemo(0); }, this);
-        addKey('S', function () { return VoltorbFlip.board.currentCard().toggleMemo(1); }, this);
-        addKey('Z', function () { return VoltorbFlip.board.currentCard().toggleMemo(2); }, this);
-        addKey('X', function () { return VoltorbFlip.board.currentCard().toggleMemo(3); }, this);
-        addKey('SPACEBAR', function () { return VoltorbFlip.board.currentCard().flip(); }, this);
+        VoltorbFlip.keyManager = new KeyManager();
+        VoltorbFlip.keyManager.addKey('UP', function () { return VoltorbFlip.board.cursor.moveUp(); }, this);
+        VoltorbFlip.keyManager.addKey('DOWN', function () { return VoltorbFlip.board.cursor.moveDown(); }, this);
+        VoltorbFlip.keyManager.addKey('LEFT', function () { return VoltorbFlip.board.cursor.moveLeft(); }, this);
+        VoltorbFlip.keyManager.addKey('RIGHT', function () { return VoltorbFlip.board.cursor.moveRight(); }, this);
+        VoltorbFlip.keyManager.addKey('A', function () { return VoltorbFlip.board.currentCard().toggleMemo(0); }, this);
+        VoltorbFlip.keyManager.addKey('S', function () { return VoltorbFlip.board.currentCard().toggleMemo(1); }, this);
+        VoltorbFlip.keyManager.addKeys(['D', 'Z'], function () { return VoltorbFlip.board.currentCard().toggleMemo(2); }, this);
+        VoltorbFlip.keyManager.addKeys(['F', 'X'], function () { return VoltorbFlip.board.currentCard().toggleMemo(3); }, this);
+        VoltorbFlip.keyManager.addKey('SPACEBAR', function () { return VoltorbFlip.board.currentCard().flip(); }, this);
     }
     VoltorbFlip.create = create;
-    function addKey(keyName, callback, context) {
-        var key = VoltorbFlip.game.input.keyboard.addKey(Phaser.Keyboard[keyName]);
-        key.onDown.add(callback, context);
-        VoltorbFlip.keys[keyName] = key;
-    }
-    VoltorbFlip.addKey = addKey;
     var Board = (function () {
         function Board() {
             this.background = VoltorbFlip.game.add.sprite(0, 0, 'background');
@@ -180,6 +175,24 @@ var VoltorbFlip;
         return Cursor;
     })();
     VoltorbFlip.Cursor = Cursor;
+    var KeyManager = (function () {
+        function KeyManager() {
+            this.keys = {};
+        }
+        KeyManager.prototype.addKey = function (keyName, callback, context) {
+            var key = VoltorbFlip.game.input.keyboard.addKey(Phaser.Keyboard[keyName]);
+            key.onDown.add(callback, context);
+            this.keys[keyName] = key;
+        };
+        KeyManager.prototype.addKeys = function (keyNames, callback, context) {
+            for (var _i = 0; _i < keyNames.length; _i++) {
+                var keyName = keyNames[_i];
+                this.addKey(keyName, callback, context);
+            }
+        };
+        return KeyManager;
+    })();
+    VoltorbFlip.KeyManager = KeyManager;
 })(VoltorbFlip || (VoltorbFlip = {}));
 window.onload = function () {
     VoltorbFlip.init();
