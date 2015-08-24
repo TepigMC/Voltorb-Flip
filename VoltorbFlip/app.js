@@ -6,8 +6,6 @@ var VoltorbFlip;
     VoltorbFlip.BOARD_SIZE = 5;
     VoltorbFlip.CARD_SIZE = 24;
     VoltorbFlip.CARD_MARGIN = 8;
-    VoltorbFlip.ROW = 0;
-    VoltorbFlip.COL = 1;
     function init() {
         VoltorbFlip.game = new Phaser.Game(256, 192, Phaser.AUTO, 'content', { preload: preload, create: create });
     }
@@ -86,6 +84,14 @@ var VoltorbFlip;
             this.coinText = VoltorbFlip.game.add.bitmapText(cardPos(col) - 3, cardPos(row) - 12, 'board_numbers', ('00' + coins).slice(-2), 32);
             this.voltorbText = VoltorbFlip.game.add.bitmapText(cardPos(col) + 5, cardPos(row) + 1, 'board_numbers', voltorbs.toString(), 32);
         }
+        HintText.prototype.setCoins = function (coins) {
+            this.coins = coins;
+            this.coinText.text = ('00' + coins).slice(-2);
+        };
+        HintText.prototype.setVoltorbs = function (voltorbs) {
+            this.voltorbs = voltorbs;
+            this.voltorbText.text = voltorbs.toString();
+        };
         return HintText;
     })();
     VoltorbFlip.HintText = HintText;

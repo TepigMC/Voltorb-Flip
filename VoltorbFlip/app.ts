@@ -6,8 +6,6 @@
   export var BOARD_SIZE = 5;
   export var CARD_SIZE = 24;
   export var CARD_MARGIN = 8;
-  export var ROW = 0;
-  export var COL = 1;
 
   export function init() {
     game = new Phaser.Game(256, 192, Phaser.AUTO, 'content', { preload: preload, create: create });
@@ -100,6 +98,16 @@
       this.voltorbs = voltorbs;
       this.coinText = game.add.bitmapText(cardPos(col) - 3, cardPos(row) - 12, 'board_numbers', ('00' + coins).slice(-2), 32);
       this.voltorbText = game.add.bitmapText(cardPos(col) + 5, cardPos(row) + 1, 'board_numbers', voltorbs.toString(), 32);
+    }
+
+    setCoins(coins: number) {
+      this.coins = coins;
+      this.coinText.text = ('00' + coins).slice(-2);
+    }
+
+    setVoltorbs(voltorbs: number) {
+      this.voltorbs = voltorbs;
+      this.voltorbText.text = voltorbs.toString();
     }
   }
 
