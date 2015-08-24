@@ -59,6 +59,12 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app\app.ts" />
+    <TypeScriptCompile Include="app\board.class.ts" />
+    <TypeScriptCompile Include="app\card.class.ts" />
+    <TypeScriptCompile Include="app\cursor.class.ts" />
+    <TypeScriptCompile Include="app\hint-text.class.ts" />
+    <TypeScriptCompile Include="app\key-manager.class.ts" />
+    <TypeScriptCompile Include="app\memo.class.ts" />
     <TypeScriptCompile Include="typings\p2.d.ts" />
     <TypeScriptCompile Include="typings\phaser.d.ts" />
     <TypeScriptCompile Include="typings\pixi.d.ts" />
