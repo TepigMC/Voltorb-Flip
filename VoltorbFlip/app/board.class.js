@@ -3,6 +3,8 @@ var VoltorbFlip;
     var Board = (function () {
         function Board() {
             this.background = VoltorbFlip.game.add.sprite(0, 0, 'background');
+            this.memoToggleButton = VoltorbFlip.game.add.sprite(196, 8, 'memo_toggle_button', 0);
+            this.quitButton = VoltorbFlip.game.add.sprite(194, 163, 'quit_button', 0);
             this.cards = this.generateCards(3);
             this.cursor = new VoltorbFlip.Cursor(0, 0);
             this.calculateTotals();

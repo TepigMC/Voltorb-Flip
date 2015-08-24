@@ -18,6 +18,8 @@
     <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="app\sprites\memo_buttons.png" />
+    <Content Include="app\sprites\memo_toggle_button.png" />
     <Content Include="app\styles\app.css" />
     <Content Include="favicon.png" />
     <Content Include="app\fonts\board_numbers.png" />
@@ -52,7 +54,6 @@
     <Content Include="app\sprites\explosion.png" />
     <Content Include="app\sprites\explosion_test.png" />
     <Content Include="app\sprites\memos.png" />
-    <Content Include="app\sprites\memo_button.png" />
     <Content Include="app\sprites\quit_button.png" />
     <Content Include="app\sprites\cursor.png" />
     <Content Include="web.config" />

@@ -5,9 +5,13 @@
     cols: HintText[];
     cursor: Cursor;
     background: Phaser.Sprite;
+    memoToggleButton: Phaser.Sprite;
+    quitButton: Phaser.Sprite;
 
     constructor() {
       this.background = game.add.sprite(0, 0, 'background');
+      this.memoToggleButton = game.add.sprite(196, 8, 'memo_toggle_button', 0);
+      this.quitButton = game.add.sprite(194, 163, 'quit_button', 0);
       this.cards = this.generateCards(3);
       this.cursor = new Cursor(0, 0);
       this.calculateTotals();
